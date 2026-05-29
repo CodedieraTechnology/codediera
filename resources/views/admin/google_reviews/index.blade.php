@@ -36,6 +36,12 @@
                         <label class="form-label fw-semibold" for="google_place_id">Google Place ID</label>
                         <input class="form-control" id="google_place_id" name="google_place_id" type="text" placeholder="ChI..." value="{{ old('google_place_id', $settings->google_place_id) }}">
                         <div class="form-text small text-muted">Use the Google Place ID Finder to get your business place ID.</div>
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" name="google_places_ssl_verify" id="google_places_ssl_verify" value="1" {{ old('google_places_ssl_verify', $settings->google_places_ssl_verify ?? true) ? 'checked' : '' }}>
+                            <label class="form-check-label small" for="google_places_ssl_verify">
+                                Verify SSL Certificate (Disable only for local testing if cURL fails)
+                            </label>
+                        </div>
                     </div>
                     <div class="col-md-2 d-flex flex-column gap-2 justify-content-end">
                         <button class="btn btn-outline-info w-100 py-2" type="button" id="btnTestConnection">
@@ -131,6 +137,7 @@
             var alertEl = document.getElementById('connectionTestAlert');
             var keyInput = document.getElementById('google_places_api_key');
             var placeInput = document.getElementById('google_place_id');
+            var sslVerifyInput = document.getElementById('google_places_ssl_verify');
 
             btnTest.addEventListener('click', function() {
                 // Clear state
@@ -139,6 +146,7 @@
 
                 var key = keyInput.value.trim();
                 var place = placeInput.value.trim();
+                var sslVerify = sslVerifyInput ? sslVerifyInput.checked : true;
 
                 if (!key || !place) {
                     alertEl.className = 'alert alert-warning mt-3';
@@ -160,7 +168,8 @@
                     },
                     body: JSON.stringify({
                         google_places_api_key: key,
-                        google_place_id: place
+                        google_place_id: place,
+                        google_places_ssl_verify: sslVerify ? 1 : 0
                     })
                 })
                 .then(function(res) {

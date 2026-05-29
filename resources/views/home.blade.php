@@ -5,125 +5,146 @@
 @section('content')
     <div class="container py-4">
         @if($sliders->count() > 0)
-            <div id="homeCarousel" class="carousel slide carousel-fade mb-5" data-bs-ride="carousel">
-                <div class="carousel-inner rounded overflow-hidden">
-                    @foreach($sliders as $index => $slide)
-                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                            @php($hasMedia = !empty($slide->video_path) || !empty($slide->image_path))
-                            @if(!empty($slide->video_path))
-                                <video class="d-block w-100" autoplay muted loop playsinline preload="metadata" style="max-height:520px;object-fit:cover" @if(!empty($slide->image_path)) poster="{{ asset('storage/'.$slide->image_path) }}" @endif>
-                                    <source src="{{ asset('storage/'.$slide->video_path) }}">
-                                </video>
-                            @elseif(!empty($slide->image_path))
-                                <img src="{{ asset('storage/'.$slide->image_path) }}" class="d-block w-100" alt="{{ $slide->title }}" style="max-height:520px;object-fit:cover">
-                            @endif
+            <!-- Hero Section with Carousel Background and Card Overlay -->
+            <section class="hero-wrapper position-relative mb-5">
+                <style>
+                    .hero-wrapper {
+                        overflow: hidden;
+                        border-radius: 1rem;
+                    }
+                    .hero-wrapper #homeCarousel {
+                        height: 480px; /* Default height for mobile/tablet */
+                    }
+                    @media (min-width: 992px) {
+                        .hero-wrapper #homeCarousel {
+                            height: 600px; /* Taller on desktop */
+                        }
+                    }
+                    .hero-wrapper #homeCarousel .carousel-inner,
+                    .hero-wrapper #homeCarousel .carousel-item {
+                        height: 100%;
+                    }
+                    .hero-overlay-container {
+                        position: absolute;
+                        inset: 0;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 1.5rem;
+                        z-index: 5;
+                        background: rgba(15, 23, 42, 0.55); /* Soft dark overlay for better text readability */
+                    }
+                    .hero-overlay-card {
+                        background: transparent !important;
+                        border: 0 !important;
+                        box-shadow: none !important;
+                        backdrop-filter: none !important;
+                        -webkit-backdrop-filter: none !important;
+                        max-width: 900px;
+                        width: 100%;
+                    }
+                    /* Global overlay text colors (white text for readability on top of slide background) */
+                    .hero-overlay-card .section-kicker {
+                        color: rgba(255, 255, 255, 0.75) !important;
+                    }
+                    .hero-overlay-card .section-title {
+                        color: #ffffff !important;
+                    }
+                    .hero-overlay-card .text-muted {
+                        color: rgba(255, 255, 255, 0.85) !important;
+                    }
+                    .hero-overlay-card .btn-outline-primary {
+                        color: #ffffff !important;
+                        border-color: #ffffff !important;
+                    }
+                    .hero-overlay-card .btn-outline-primary:hover {
+                        background-color: #ffffff !important;
+                        color: var(--cd-primary) !important;
+                    }
+                    /* Hide carousel-caption when overlaid to prevent double headings */
+                    .hero-wrapper .carousel-caption,
+                    .hero-wrapper .carousel-mobile-caption {
+                        display: none !important;
+                    }
+                </style>
 
-                            @if($hasMedia)
-                                <div class="carousel-mobile-caption d-block d-md-none bg-dark bg-opacity-75 text-white p-3">
-                                    <div class="fw-semibold">{{ $slide->title }}</div>
-                                    @if($slide->caption)
-                                        <div class="small opacity-75 mt-1">{{ $slide->caption }}</div>
-                                    @endif
-                                    @if($slide->button_text && $slide->button_url)
-                                        @php($slideUrl = \Illuminate\Support\Str::startsWith($slide->button_url, ['http://', 'https://']) ? $slide->button_url : url(ltrim($slide->button_url, '/')))
-                                        <a class="btn btn-sm btn-primary mt-2" href="{{ $slideUrl }}">{{ $slide->button_text }}</a>
-                                    @endif
-                                </div>
-                            @else
-                                <div class="cd-carousel-fallback d-flex align-items-center justify-content-center bg-secondary text-white">
-                                    <div class="text-center">
-                                        <div class="h2 mb-0">{{ $slide->title }}</div>
-                                    </div>
-                                </div>
-                            @endif
-                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2 p-md-3">
-                                <h5>{{ $slide->title }}</h5>
-                                @if($slide->caption)
-                                    <p>{{ $slide->caption }}</p>
+                <!-- Sliding Carousel -->
+                <div id="homeCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                    <div class="carousel-inner rounded overflow-hidden">
+                        @foreach($sliders as $index => $slide)
+                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                @php($hasMedia = !empty($slide->video_path) || !empty($slide->image_path))
+                                @if(!empty($slide->video_path))
+                                    <video class="d-block w-100" autoplay muted loop playsinline preload="metadata" style="height: 100%; object-fit: cover;" @if(!empty($slide->image_path)) poster="{{ asset('storage/'.$slide->image_path) }}" @endif>
+                                        <source src="{{ asset('storage/'.$slide->video_path) }}">
+                                    </video>
+                                @elseif(!empty($slide->image_path))
+                                    <img src="{{ asset('storage/'.$slide->image_path) }}" class="d-block w-100" alt="{{ $slide->title }}" style="height: 100%; object-fit: cover;">
                                 @endif
-                                @if($slide->button_text && $slide->button_url)
-                                    @php($slideUrl = \Illuminate\Support\Str::startsWith($slide->button_url, ['http://', 'https://']) ? $slide->button_url : url(ltrim($slide->button_url, '/')))
-                                    <a class="btn btn-primary" href="{{ $slideUrl }}">{{ $slide->button_text }}</a>
+
+                                @if(!$hasMedia)
+                                    <div class="cd-carousel-fallback d-flex align-items-center justify-content-center bg-secondary text-white" style="height: 100%;">
+                                        <div class="text-center">
+                                            <div class="h2 mb-0">{{ $slide->title }}</div>
+                                        </div>
+                                    </div>
                                 @endif
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev" style="z-index: 6;">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next" style="z-index: 6;">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
-        @endif
 
-        <section class="mb-5">
-            <div class="card">
-                <div class="card-body p-4 p-lg-5">
-                    <div class="row align-items-center g-4">
-                        <div class="col-12 col-lg-7">
-                            <div class="section-kicker">{{ $siteSettings?->home_hero_kicker ?: 'What We Do' }}</div>
-                            <h1 class="h3 h2-lg section-title mb-2">{{ $siteSettings?->home_hero_title ?: ($siteSettings?->site_name ?? config('app.name', 'Codediera')) }}</h1>
-                            <div class="text-muted mb-3">
-                                {{ $siteSettings?->home_hero_body ?: 'We build modern websites, web applications, and business systems that help you sell, manage customers, and automate work. We also deliver digital skills training and career support for students and professionals.' }}
-                            </div>
-                            <div class="d-flex flex-nowrap gap-2 overflow-auto pb-1" style="-webkit-overflow-scrolling: touch;">
-                                <a class="btn btn-primary" href="{{ route('services') }}">Explore Services</a>
-                                <a class="btn btn-outline-primary" href="{{ route('contact') }}">Talk to Us</a>
-                            </div>
-                        </div>
-                        <div class="col-12 col-lg-5">
-                            <div class="row g-2">
-                                <div class="col-12">
-                                    <div class="d-flex gap-3 align-items-start">
-                                        <div class="icon-badge flex-shrink-0">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                                                <path d="M2 2h12a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm0 1v9h12V3H2z"/>
-                                                <path d="M4 5h8v1H4V5zm0 2h6v1H4V7zm0 2h5v1H4V9z"/>
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <div class="fw-semibold">{{ $siteSettings?->home_hero_item1_title ?: 'Web & Business Software' }}</div>
-                                            <div class="text-muted small">{{ $siteSettings?->home_hero_item1_body ?: 'Company websites, portals, dashboards, and automation.' }}</div>
-                                        </div>
+                <!-- Hero Card Overlayed on Top of the Slide -->
+                <div class="hero-overlay-container">
+                    <div class="card hero-overlay-card">
+                        <div class="card-body p-0">
+                            <div class="row justify-content-center text-center">
+                                <div class="col-12 col-lg-10">
+                                    <div class="section-kicker">{{ $siteSettings?->home_hero_kicker ?: 'What We Do' }}</div>
+                                    <h1 class="h3 h2-lg section-title mb-2">{{ $siteSettings?->home_hero_title ?: ($siteSettings?->site_name ?? config('app.name', 'Codediera')) }}</h1>
+                                    <div class="text-muted mb-3 mx-auto" style="max-width: 800px;">
+                                        {{ $siteSettings?->home_hero_body ?: 'We build modern websites, web applications, and business systems that help you sell, manage customers, and automate work. We also deliver digital skills training and career support for students and professionals.' }}
                                     </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="d-flex gap-3 align-items-start">
-                                        <div class="icon-badge flex-shrink-0">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                                                <path d="M11 1H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zM5 0h6a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V3a3 3 0 0 1 3-3z"/>
-                                                <path d="M8 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <div class="fw-semibold">{{ $siteSettings?->home_hero_item2_title ?: 'Mobile & Product Delivery' }}</div>
-                                            <div class="text-muted small">{{ $siteSettings?->home_hero_item2_body ?: 'Apps, setup, access, and ongoing support/renewals.' }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="d-flex gap-3 align-items-start">
-                                        <div class="icon-badge flex-shrink-0">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                                                <path d="M8 0a5 5 0 0 1 5 5c0 1.657-.806 3.083-2.031 4H13.5a2.5 2.5 0 0 1 0 5H2.5a2.5 2.5 0 0 1 0-5h2.531A4.98 4.98 0 0 1 3 5a5 5 0 0 1 5-5zm0 1a4 4 0 0 0-4 4c0 1.49.817 2.788 2.031 3.5h3.938A3.99 3.99 0 0 0 12 5a4 4 0 0 0-4-4zM2.5 10a1.5 1.5 0 0 0 0 3h11a1.5 1.5 0 0 0 0-3h-11z"/>
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <div class="fw-semibold">{{ $siteSettings?->home_hero_item3_title ?: 'Digital Skills & Career Support' }}</div>
-                                            <div class="text-muted small">{{ $siteSettings?->home_hero_item3_body ?: 'Training, mentorship, IT placement, and growth.' }}</div>
-                                        </div>
+                                    <div class="d-flex justify-content-center gap-3">
+                                        <a class="btn btn-primary" href="{{ route('services') }}">Explore Services</a>
+                                        <a class="btn btn-outline-primary" href="{{ route('contact') }}">Talk to Us</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        @else
+            <!-- Standard Hero Card if no sliders (Transparent Background) -->
+            <section class="mb-5">
+                <div class="card bg-transparent border-0 shadow-none">
+                    <div class="card-body p-0">
+                        <div class="row justify-content-center text-center">
+                            <div class="col-12 col-lg-10">
+                                <div class="section-kicker">{{ $siteSettings?->home_hero_kicker ?: 'What We Do' }}</div>
+                                <h1 class="h3 h2-lg section-title mb-2">{{ $siteSettings?->home_hero_title ?: ($siteSettings?->site_name ?? config('app.name', 'Codediera')) }}</h1>
+                                <div class="text-muted mb-3 mx-auto" style="max-width: 800px;">
+                                    {{ $siteSettings?->home_hero_body ?: 'We build modern websites, web applications, and business systems that help you sell, manage customers, and automate work. We also deliver digital skills training and career support for students and professionals.' }}
+                                </div>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <a class="btn btn-primary" href="{{ route('services') }}">Explore Services</a>
+                                    <a class="btn btn-outline-primary" href="{{ route('contact') }}">Talk to Us</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        @endif
 
         @php($apply = $ctas->get('apply_for_job'))
         @php($skills = $ctas->get('get_digital_skills'))
