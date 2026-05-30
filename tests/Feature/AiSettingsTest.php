@@ -31,7 +31,7 @@ class AiSettingsTest extends TestCase
     {
         $response = $this->postJson(route('admin.ai-settings.test'), [
             'provider' => 'gemini',
-            'model' => 'gemini-1.5-flash',
+            'model' => 'gemini-2.0-flash',
             'api_key' => 'test-key',
         ]);
 
@@ -44,7 +44,7 @@ class AiSettingsTest extends TestCase
 
         $response = $this->actingAs($user)->postJson(route('admin.ai-settings.test'), [
             'provider' => 'gemini',
-            'model' => 'gemini-1.5-flash',
+            'model' => 'gemini-2.0-flash',
             'api_key' => 'test-key',
         ]);
 
@@ -75,7 +75,7 @@ class AiSettingsTest extends TestCase
 
         $response = $this->actingAs($admin)->postJson(route('admin.ai-settings.test'), [
             'provider' => 'gemini',
-            'model' => 'gemini-1.5-flash',
+            'model' => 'gemini-2.0-flash',
             'api_key' => 'valid-gemini-key',
         ]);
 
@@ -128,7 +128,7 @@ class AiSettingsTest extends TestCase
         // Save a mock API key in the database
         $settings = AiSetting::query()->firstOrCreate(['id' => 1]);
         $settings->provider = 'gemini';
-        $settings->model = 'gemini-1.5-flash';
+        $settings->model = 'gemini-2.0-flash';
         $settings->api_key = Crypt::encryptString('saved-gemini-key');
         $settings->save();
 
@@ -137,7 +137,7 @@ class AiSettingsTest extends TestCase
         // Pass an empty API key so it falls back to the database key
         $response = $this->actingAs($admin)->postJson(route('admin.ai-settings.test'), [
             'provider' => 'gemini',
-            'model' => 'gemini-1.5-flash',
+            'model' => 'gemini-2.0-flash',
             'api_key' => '',
             'id' => $settings->id,
         ]);
@@ -162,7 +162,7 @@ class AiSettingsTest extends TestCase
 
         $response = $this->actingAs($admin)->postJson(route('admin.ai-settings.test'), [
             'provider' => 'gemini',
-            'model' => 'gemini-1.5-flash',
+            'model' => 'gemini-2.0-flash',
             'api_key' => '',
         ]);
 
@@ -187,7 +187,7 @@ class AiSettingsTest extends TestCase
 
         $response = $this->actingAs($admin)->postJson(route('admin.ai-settings.test'), [
             'provider' => 'gemini',
-            'model' => 'gemini-1.5-flash',
+            'model' => 'gemini-2.0-flash',
             'api_key' => 'invalid-gemini-key',
         ]);
 
@@ -208,7 +208,7 @@ class AiSettingsTest extends TestCase
 
         $response = $this->actingAs($admin)->postJson(route('admin.ai-settings.test'), [
             'provider' => 'gemini',
-            'model' => 'gemini-1.5-flash',
+            'model' => 'gemini-2.0-flash',
             'api_key' => 'valid-gemini-key',
             'ssl_verify' => false,
         ]);
@@ -250,13 +250,13 @@ class AiSettingsTest extends TestCase
         $admin = $this->getAdminUser();
         AiSetting::query()->firstOrCreate(['id' => 1], [
             'provider' => 'gemini',
-            'model' => 'gemini-1.5-flash',
+            'model' => 'gemini-2.0-flash',
         ]);
 
         $response = $this->actingAs($admin)->get(route('admin.ai-settings.index'));
 
         $response->assertStatus(200);
-        $response->assertSee('gemini-1.5-flash');
+        $response->assertSee('gemini-2.0-flash');
     }
 
     public function test_admin_can_store_ai_setting()

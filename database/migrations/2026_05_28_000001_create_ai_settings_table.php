@@ -18,7 +18,7 @@ return new class extends Migration
             $table->boolean('enabled')->default(false);
             $table->string('provider')->default('gemini');
             $table->text('api_key')->nullable();
-            $table->string('model')->default('gemini-1.5-flash');
+            $table->string('model')->default('gemini-2.0-flash');
             $table->timestamps();
         });
     }

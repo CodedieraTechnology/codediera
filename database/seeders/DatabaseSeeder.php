@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
         AiSetting::query()->firstOrCreate(['id' => 1], [
             'enabled' => false,
             'provider' => 'gemini',
-            'model' => 'gemini-1.5-flash',
+            'model' => 'gemini-2.0-flash',
             'ssl_verify' => true,
         ]);
 

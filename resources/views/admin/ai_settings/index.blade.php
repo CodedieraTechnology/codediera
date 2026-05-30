@@ -113,8 +113,8 @@
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label" for="model">Model Name</label>
-                                <input class="form-control" id="model" name="model" type="text" placeholder="gemini-1.5-flash" required>
-                                <div class="form-text">Specify the exact model version to use (e.g., <code>gemini-1.5-flash</code>, <code>gpt-4o</code>, or <code>claude-3-5-sonnet-20241022</code>).</div>
+                                <input class="form-control" id="model" name="model" type="text" placeholder="gemini-2.0-flash" required>
+                                <div class="form-text">Specify the exact model version to use (e.g., <code>gemini-2.0-flash</code>, <code>gpt-4o</code>, or <code>claude-3-5-sonnet-20241022</code>).</div>
                             </div>
                         </div>
 
@@ -174,7 +174,7 @@
         var btnSave = document.getElementById('btnSaveConfig');
 
         var defaultModels = {
-            gemini: 'gemini-1.5-flash',
+            gemini: 'gemini-2.0-flash',
             openai: 'gpt-4o',
             anthropic: 'claude-3-5-sonnet-20241022',
             groq: 'llama-3.3-70b-versatile',
