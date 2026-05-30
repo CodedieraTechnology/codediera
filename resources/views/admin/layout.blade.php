@@ -36,8 +36,9 @@
             --bs-tertiary-color: var(--cd-muted-2);
             --bs-border-color: var(--cd-border);
             --bs-card-bg: var(--cd-surface-strong);
-            --bs-link-color: #0d6efd;
-            --bs-link-hover-color: #0d6efd;
+            --cd-primary-color: {{ $siteSettings?->primary_color ?: '#0d6efd' }};
+            --bs-link-color: var(--cd-primary-color);
+            --bs-link-hover-color: var(--cd-primary-color);
             color-scheme: light;
         }
         [data-theme="dark"] {
@@ -271,6 +272,31 @@
         @keyframes cd-spin {
             to { transform: rotate(360deg); }
         }
+        .btn-primary {
+            background-color: var(--cd-primary-color) !important;
+            border-color: var(--cd-primary-color) !important;
+            color: #fff !important;
+        }
+        .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+            filter: brightness(0.9);
+        }
+        .btn-outline-primary {
+            color: var(--cd-primary-color) !important;
+            border-color: var(--cd-primary-color) !important;
+        }
+        .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active {
+            background-color: var(--cd-primary-color) !important;
+            border-color: var(--cd-primary-color) !important;
+            color: #fff !important;
+        }
+        .text-primary {
+            color: var(--cd-primary-color) !important;
+        }
+        .cd-admin-nav-link.active {
+            background: var(--cd-primary-color) !important;
+            color: #fff !important;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
@@ -292,16 +318,23 @@
         || request()->routeIs('admin.mail-settings.*')
         || request()->routeIs('admin.payment-settings.*')
         || request()->routeIs('admin.ai-settings.*');
+    $adminUsersOpen = request()->routeIs('admin.users.*')
+        || request()->routeIs('admin.roles.*');
 @endphp
 
-<nav class="navbar navbar-dark bg-dark fixed-top shadow-sm d-lg-none cd-admin-topbar">
+<nav class="navbar navbar-dark bg-dark fixed-top shadow-sm d-lg-none cd-admin-topbar" style="background-color: var(--cd-primary-color, #212529) !important;">
     <div class="container-fluid">
         <button class="btn btn-outline-light btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#adminSidebarMobile" aria-controls="adminSidebarMobile" aria-label="Open menu">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
                 <path d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
             </svg>
         </button>
-        <a class="navbar-brand fw-semibold" href="{{ route('admin.dashboard') }}">Admin</a>
+        <a class="navbar-brand fw-semibold d-flex align-items-center gap-2" href="{{ route('admin.dashboard') }}">
+            @if($siteSettings?->logo_path)
+                <img src="{{ asset('storage/'.$siteSettings->logo_path) }}" alt="{{ $siteSettings->site_name ?? 'Logo' }}" style="height: 30px; border-radius: 6px; object-fit: contain;">
+            @endif
+            <span>{{ $siteSettings?->site_name ?? 'Admin' }}</span>
+        </a>
         <div class="d-flex align-items-center gap-2">
             <button class="btn btn-outline-light btn-sm cd-theme-toggle" type="button" data-cd-theme-toggle aria-label="Toggle theme">
                 <svg class="cd-theme-icon cd-theme-icon-sun" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
@@ -412,6 +445,29 @@
             </div>
         </div>
 
+        @if(auth()->user()->hasPermission('manage_users'))
+        <div class="cd-admin-nav-section">
+            <div class="cd-admin-nav-label">User Administration</div>
+            <button class="cd-admin-nav-toggle btn p-0 text-start {{ $adminUsersOpen ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#adminMobileUsers" aria-expanded="{{ $adminUsersOpen ? 'true' : 'false' }}" aria-controls="adminMobileUsers">
+                <span class="cd-admin-nav-link w-100">
+                    <svg class="cd-admin-nav-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8Zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.047 1.09-2.904.243-.292.528-.541.846-.783ZM2.167 13c.007-.123.072-.544.402-1.047.382-.58 1.157-1.127 2.431-1.127.323 0 .618.04.873.11a5.867 5.867 0 0 0-.256.76c-.23.633-.24 1.295-.24 1.304H2.167Zm4.1-6a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm.8-3a3 3 0 1 1-3 3 3 3 0 0 1 3-3Z"/>
+                    </svg>
+                    Access Control
+                    <svg class="cd-admin-nav-caret" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M1.5 5.5a.5.5 0 0 1 .707 0L8 11.293l5.793-5.793a.5.5 0 0 1 .707.707l-6.146 6.146a.5.5 0 0 1-.708 0L1.5 6.207a.5.5 0 0 1 0-.707z"/>
+                    </svg>
+                </span>
+            </button>
+            <div class="collapse {{ $adminUsersOpen ? 'show' : '' }}" id="adminMobileUsers">
+                <div class="cd-admin-subnav">
+                    <a class="cd-admin-nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">Manage Users</a>
+                    <a class="cd-admin-nav-link {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}" href="{{ route('admin.roles.index') }}">Roles & Permissions</a>
+                </div>
+            </div>
+        </div>
+        @endif
+
         <div class="mt-3">
             <form method="post" action="{{ route('admin.logout') }}">
                 @csrf
@@ -425,13 +481,17 @@
     <aside class="cd-admin-sidebar d-none d-lg-block">
         <div class="cd-admin-sidebar-inner">
             <a class="cd-admin-brand" href="{{ route('admin.dashboard') }}">
-                <span class="cd-admin-brand-mark" aria-hidden="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                        <path d="M8 0a5.53 5.53 0 0 0-3.594 1.342c-.766.65-1.2 1.52-1.2 2.46 0 1.616 1.33 2.933 2.95 3.222l.24.04c.37.06.64.37.64.74 0 .41-.33.74-.74.74H5.5a.5.5 0 0 0 0 1h.75a.75.75 0 0 1 0 1.5H5.5a.5.5 0 0 0 0 1h.75c.41 0 .74.33.74.74 0 .37-.27.68-.64.74l-.24.04C4.49 13.067 3.16 14.384 3.16 16h9.68c0-1.616-1.33-2.933-2.95-3.222l-.24-.04a.75.75 0 0 1 .1-1.493H10.5a.5.5 0 0 0 0-1h-.75a.75.75 0 0 1 0-1.5h.75a.5.5 0 0 0 0-1h-.75a.75.75 0 0 1 0-1.5h.75c.41 0 .74-.33.74-.74 0-.37-.27-.68-.64-.74l-.24-.04C8.74 6.733 7.41 5.416 7.41 3.8c0-.94-.434-1.81-1.2-2.46A5.53 5.53 0 0 0 8 0z"/>
-                    </svg>
-                </span>
+                @if($siteSettings?->logo_path)
+                    <img src="{{ asset('storage/'.$siteSettings->logo_path) }}" alt="{{ $siteSettings->site_name ?? 'Logo' }}" style="height: 40px; border-radius: 10px; object-fit: contain;">
+                @else
+                    <span class="cd-admin-brand-mark" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                            <path d="M8 0a5.53 5.53 0 0 0-3.594 1.342c-.766.65-1.2 1.52-1.2 2.46 0 1.616 1.33 2.933 2.95 3.222l.24.04c.37.06.64.37.64.74 0 .41-.33.74-.74.74H5.5a.5.5 0 0 0 0 1h.75a.75.75 0 0 1 0 1.5H5.5a.5.5 0 0 0 0 1h.75c.41 0 .74.33.74.74 0 .37-.27.68-.64.74l-.24.04C4.49 13.067 3.16 14.384 3.16 16h9.68c0-1.616-1.33-2.933-2.95-3.222l-.24-.04a.75.75 0 0 1 .1-1.493H10.5a.5.5 0 0 0 0-1h-.75a.75.75 0 0 1 0-1.5h.75a.5.5 0 0 0 0-1h-.75a.75.75 0 0 1 0-1.5h.75c.41 0 .74-.33.74-.74 0-.37-.27-.68-.64-.74l-.24-.04C8.74 6.733 7.41 5.416 7.41 3.8c0-.94-.434-1.81-1.2-2.46A5.53 5.53 0 0 0 8 0z"/>
+                        </svg>
+                    </span>
+                @endif
                 <span>
-                    <div class="cd-admin-brand-title">Codediera</div>
+                    <div class="cd-admin-brand-title">{{ $siteSettings?->site_name ?? 'Codediera' }}</div>
                     <div class="cd-admin-brand-subtitle">Admin Panel</div>
                 </span>
             </a>
@@ -531,6 +591,29 @@
                     </div>
                 </div>
             </div>
+
+            @if(auth()->user()->hasPermission('manage_users'))
+            <div class="cd-admin-nav-section">
+                <div class="cd-admin-nav-label">User Administration</div>
+                <button class="cd-admin-nav-toggle btn p-0 text-start {{ $adminUsersOpen ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#adminDesktopUsers" aria-expanded="{{ $adminUsersOpen ? 'true' : 'false' }}" aria-controls="adminDesktopUsers">
+                    <span class="cd-admin-nav-link w-100">
+                        <svg class="cd-admin-nav-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                            <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8Zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.047 1.09-2.904.243-.292.528-.541.846-.783ZM2.167 13c.007-.123.072-.544.402-1.047.382-.58 1.157-1.127 2.431-1.127.323 0 .618.04.873.11a5.867 5.867 0 0 0-.256.76c-.23.633-.24 1.295-.24 1.304H2.167Zm4.1-6a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm.8-3a3 3 0 1 1-3 3 3 3 0 0 1 3-3Z"/>
+                        </svg>
+                        Access Control
+                        <svg class="cd-admin-nav-caret" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                            <path d="M1.5 5.5a.5.5 0 0 1 .707 0L8 11.293l5.793-5.793a.5.5 0 0 1 .707.707l-6.146 6.146a.5.5 0 0 1-.708 0L1.5 6.207a.5.5 0 0 1 0-.707z"/>
+                        </svg>
+                    </span>
+                </button>
+                <div class="collapse {{ $adminUsersOpen ? 'show' : '' }}" id="adminDesktopUsers">
+                    <div class="cd-admin-subnav">
+                        <a class="cd-admin-nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">Manage Users</a>
+                        <a class="cd-admin-nav-link {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}" href="{{ route('admin.roles.index') }}">Roles & Permissions</a>
+                    </div>
+                </div>
+            </div>
+            @endif
 
             <div class="mt-auto pt-3">
                 <form method="post" action="{{ route('admin.logout') }}">

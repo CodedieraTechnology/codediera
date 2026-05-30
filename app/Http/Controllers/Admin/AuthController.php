@@ -47,5 +47,41 @@ class AuthController extends Controller
 
         return redirect()->route('admin.login');
     }
+
+    public function showRegister()
+    {
+        if (\App\Models\User::where('is_admin', true)->exists()) {
+            abort(404);
+        }
+
+        return view('admin.auth.register');
+    }
+
+    public function register(Request $request)
+    {
+        if (\App\Models\User::where('is_admin', true)->exists()) {
+            abort(404);
+        }
+
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $user = \App\Models\User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+            'is_admin' => true,
+        ]);
+
+        $superAdminRole = \App\Models\Role::where('slug', 'super_admin')->first();
+        if ($superAdminRole) {
+            $user->roles()->sync([$superAdminRole->id]);
+        }
+
+        return redirect()->route('admin.login')->with('success', 'Super admin account created successfully! Please sign in.');
+    }
 }
 

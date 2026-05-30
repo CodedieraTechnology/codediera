@@ -45,4 +45,27 @@ class User extends Authenticatable
         'is_admin' => 'boolean',
         'is_instructor' => 'boolean',
     ];
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function hasRole($role)
+    {
+        if (is_string($role)) {
+            return $this->roles->contains('slug', $role);
+        }
+        return !!$role->intersect($this->roles)->count();
+    }
+
+    public function hasPermission($permission)
+    {
+        // Super admins automatically have all permissions
+        if ($this->hasRole('super_admin')) {
+            return true;
+        }
+        
+        return $this->roles->flatMap->permissions->contains('slug', $permission);
+    }
 }

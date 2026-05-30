@@ -67,30 +67,29 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
 
-        }
-
-        // Run auto migration if there are pending migrations
-        try {
-            $migrator = app('migrator');
-            $paths = array_merge($migrator->paths(), [database_path('migrations')]);
-            
-            $shouldMigrate = false;
-            if (!$migrator->repositoryExists()) {
-                $shouldMigrate = true;
-            } else {
-                $files = $migrator->getMigrationFiles($paths);
-                $ran = $migrator->getRepository()->getRan();
-                $pending = array_diff(array_keys($files), $ran);
-                if (count($pending) > 0) {
+            // Run auto migration if there are pending migrations
+            try {
+                $migrator = app('migrator');
+                $paths = array_merge($migrator->paths(), [database_path('migrations')]);
+                
+                $shouldMigrate = false;
+                if (!$migrator->repositoryExists()) {
                     $shouldMigrate = true;
+                } else {
+                    $files = $migrator->getMigrationFiles($paths);
+                    $ran = $migrator->getRepository()->getRan();
+                    $pending = array_diff(array_keys($files), $ran);
+                    if (count($pending) > 0) {
+                        $shouldMigrate = true;
+                    }
                 }
-            }
 
-            if ($shouldMigrate) {
-                \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+                if ($shouldMigrate) {
+                    \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+                }
+            } catch (\Throwable $e) {
+                // Prevent app boot failures due to database/connection issues
             }
-        } catch (\Throwable $e) {
-            // Prevent app boot failures due to database/connection issues
         }
 
         Schema::defaultStringLength(191);

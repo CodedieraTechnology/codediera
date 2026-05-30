@@ -20,6 +20,8 @@ use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\TeamMemberController;
 use App\Http\Controllers\Admin\ServiceTypeController;
 use App\Http\Controllers\Admin\GoogleReviewController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\AboutPageController;
 use App\Http\Controllers\ContactFormController;
 use App\Http\Controllers\ContactPageController;
@@ -117,6 +119,8 @@ Route::get('/service-timeout', function () {
 Route::prefix('admin')->group(function () {
     Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
     Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
+    Route::get('/register', [AdminAuthController::class, 'showRegister'])->name('admin.register');
+    Route::post('/register', [AdminAuthController::class, 'register'])->name('admin.register.submit');
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
     Route::middleware('admin')->group(function () {
@@ -326,6 +330,11 @@ Route::prefix('admin')->group(function () {
         Route::post('google-reviews/test-connection', [GoogleReviewController::class, 'testConnection'])->name('admin.google-reviews.test-connection');
         Route::put('google-reviews/{review}/approve', [GoogleReviewController::class, 'toggleApprove'])->name('admin.google-reviews.approve');
         Route::delete('google-reviews/{review}', [GoogleReviewController::class, 'destroy'])->name('admin.google-reviews.destroy');
+
+        Route::middleware('permission:manage_users')->group(function () {
+            Route::resource('users', UserController::class)->except(['show'])->names('admin.users');
+            Route::resource('roles', RoleController::class)->except(['show'])->names('admin.roles');
+        });
     });
 });
 
