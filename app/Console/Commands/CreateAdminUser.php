@@ -20,7 +20,7 @@ class CreateAdminUser extends Command
         $password = $this->option('password') ?: $this->secret('Password (leave blank to auto-generate)');
 
         if (!$password) {
-            $password = Str::password(16);
+            $password = Str::random(12) . '!A1';
             $this->line('Generated password: '.$password);
         }
 

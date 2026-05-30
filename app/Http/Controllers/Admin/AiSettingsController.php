@@ -47,8 +47,17 @@ class AiSettingsController extends Controller
         return redirect()->route('admin.ai-settings.index')->with('status', 'AI Configuration added successfully.');
     }
 
-    public function update(Request $request, AiSetting $aiSetting)
+    public function update(Request $request, AiSetting $aiSetting = null)
     {
+        if (!$aiSetting || !$aiSetting->exists) {
+            $id = $request->input('config_id') ?: $request->input('id');
+            $aiSetting = AiSetting::find($id);
+        }
+
+        if (!$aiSetting) {
+            return redirect()->route('admin.ai-settings.index')->with('error', 'AI Configuration not found.');
+        }
+
         $data = $request->validate([
             'enabled' => ['nullable'],
             'provider' => ['required', 'string', 'in:gemini,openai,anthropic,groq,deepseek,mistral,cohere,perplexity'],

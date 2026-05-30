@@ -245,6 +245,27 @@ class AiSettingsTest extends TestCase
         ]);
     }
 
+    public function test_update_ai_settings_without_id_in_route_parameter()
+    {
+        $settings = AiSetting::query()->firstOrCreate(['id' => 1]);
+        $admin = $this->getAdminUser();
+
+        $response = $this->actingAs($admin)->put(route('admin.ai-settings.update'), [
+            'config_id' => $settings->id,
+            'provider' => 'openai',
+            'model' => 'gpt-4o-mini',
+            'api_key' => 'another-key',
+            'ssl_verify' => '1',
+        ]);
+
+        $response->assertRedirect(route('admin.ai-settings.index'));
+        $this->assertDatabaseHas('ai_settings', [
+            'provider' => 'openai',
+            'model' => 'gpt-4o-mini',
+            'ssl_verify' => true,
+        ]);
+    }
+
     public function test_admin_can_access_ai_settings_index_and_list()
     {
         $admin = $this->getAdminUser();

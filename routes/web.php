@@ -300,7 +300,7 @@ Route::prefix('admin')->group(function () {
             return redirect()->route('admin.ai-settings.index');
         })->name('admin.ai-settings.edit');
         Route::post('ai-settings', [AiSettingsController::class, 'store'])->name('admin.ai-settings.store');
-        Route::put('ai-settings/{ai_setting}', [AiSettingsController::class, 'update'])->name('admin.ai-settings.update');
+        Route::put('ai-settings/{ai_setting?}', [AiSettingsController::class, 'update'])->name('admin.ai-settings.update');
         Route::delete('ai-settings/{ai_setting}', [AiSettingsController::class, 'destroy'])->name('admin.ai-settings.destroy');
         Route::post('ai-settings/test', [AiSettingsController::class, 'testConnection'])->name('admin.ai-settings.test');
 
