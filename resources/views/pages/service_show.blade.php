@@ -3,6 +3,80 @@
 @section('title', $service->title)
 
 @section('content')
+    <style>
+        .cd-detail-card {
+            border-radius: 1.25rem !important;
+            border: 1px solid var(--cd-border) !important;
+            background: var(--cd-surface) !important;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04) !important;
+        }
+        [data-theme="dark"] .cd-detail-card {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+        }
+        .cd-badge-pill {
+            font-size: 0.725rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            padding: 0.3rem 0.75rem;
+            border-radius: 2rem;
+            display: inline-flex;
+            align-items: center;
+        }
+        .cd-badge-pill.pricing-free {
+            background-color: rgba(22, 163, 74, 0.08);
+            color: #16a34a;
+            border: 1px solid rgba(22, 163, 74, 0.15);
+        }
+        .cd-badge-pill.pricing-cost {
+            background-color: rgba(13, 110, 253, 0.08);
+            color: var(--cd-primary);
+            border: 1px solid rgba(13, 110, 253, 0.15);
+        }
+        .cd-badge-pill.payment-recurring {
+            background-color: rgba(245, 158, 11, 0.08);
+            color: #d97706;
+            border: 1px solid rgba(245, 158, 11, 0.15);
+        }
+        .cd-badge-pill.payment-custom {
+            background-color: rgba(100, 116, 139, 0.08);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+        .cd-badge-pill.payment-onetime {
+            background-color: rgba(13, 110, 253, 0.08);
+            color: var(--cd-primary);
+            border: 1px solid rgba(13, 110, 253, 0.15);
+        }
+
+        /* Dark Theme badges */
+        [data-theme="dark"] .cd-badge-pill.pricing-free {
+            background-color: rgba(22, 163, 74, 0.15);
+            color: #4ade80;
+            border-color: rgba(22, 163, 74, 0.25);
+        }
+        [data-theme="dark"] .cd-badge-pill.pricing-cost {
+            background-color: rgba(13, 110, 253, 0.15);
+            color: #60a5fa;
+            border-color: rgba(13, 110, 253, 0.25);
+        }
+        [data-theme="dark"] .cd-badge-pill.payment-recurring {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border-color: rgba(245, 158, 11, 0.25);
+        }
+        [data-theme="dark"] .cd-badge-pill.payment-custom {
+            background-color: rgba(148, 163, 184, 0.15);
+            color: #cbd5e1;
+            border-color: rgba(148, 163, 184, 0.25);
+        }
+        [data-theme="dark"] .cd-badge-pill.payment-onetime {
+            background-color: rgba(13, 110, 253, 0.15);
+            color: #60a5fa;
+            border-color: rgba(13, 110, 253, 0.25);
+        }
+    </style>
+
     <div class="container py-4">
         @if(session('status'))
             <div class="alert alert-success">{{ session('status') }}</div>
@@ -29,7 +103,7 @@
 
         <div class="row g-3">
             <div class="col-12 col-lg-7">
-                <div class="card">
+                <div class="card cd-detail-card">
                     <div class="card-body">
                         @php($heroImage = $service->approach_image_path ?: $service->screenshot_path)
                         @if($heroImage)
@@ -40,21 +114,21 @@
 
                         <div class="d-flex flex-wrap gap-2 mb-3">
                             @if($service->is_free)
-                                <span class="badge text-bg-success">Free</span>
+                                <span class="cd-badge-pill pricing-free">Free</span>
                             @elseif(!is_null($service->price))
-                                <span class="badge text-bg-primary">Cost: ₦{{ number_format((float)$service->price, 2) }}</span>
+                                <span class="cd-badge-pill pricing-cost">Cost: ₦{{ number_format((float)$service->price, 2) }}</span>
                             @else
-                                <span class="badge text-bg-secondary">Cost: Custom</span>
+                                <span class="cd-badge-pill pricing-cost">Cost: Custom</span>
                             @endif
                             @php($paymentType = $service->payment_type ?: 'one_time')
                             @if($paymentType === 'monthly')
-                                <span class="badge text-bg-warning text-dark">Monthly</span>
+                                <span class="cd-badge-pill payment-recurring">Monthly</span>
                             @elseif($paymentType === 'yearly')
-                                <span class="badge text-bg-warning text-dark">Yearly</span>
+                                <span class="cd-badge-pill payment-recurring">Yearly</span>
                             @elseif($paymentType === 'custom')
-                                <span class="badge text-bg-dark">Custom plan</span>
+                                <span class="cd-badge-pill payment-custom">Custom plan</span>
                             @else
-                                <span class="badge text-bg-dark">One-time</span>
+                                <span class="cd-badge-pill payment-onetime">One-time</span>
                             @endif
                         </div>
 
@@ -94,7 +168,7 @@
                 <div class="d-flex justify-content-end mb-2">
                     <a class="btn btn-sm btn-outline-primary" href="{{ route('service-portal.login') }}">My Service(s)</a>
                 </div>
-                <div class="card" id="apply">
+                <div class="card cd-detail-card" id="apply">
                     <div class="card-body">
                         <h2 class="h5 mb-3">Request this service</h2>
 

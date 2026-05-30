@@ -382,7 +382,7 @@
                     <a class="cd-admin-nav-link {{ request()->routeIs('admin.contact-settings.*') ? 'active' : '' }}" href="{{ route('admin.contact-settings.edit') }}">Contact Settings</a>
                     <a class="cd-admin-nav-link {{ request()->routeIs('admin.mail-settings.*') ? 'active' : '' }}" href="{{ route('admin.mail-settings.edit') }}">Email Settings</a>
                     <a class="cd-admin-nav-link {{ request()->routeIs('admin.payment-settings.*') ? 'active' : '' }}" href="{{ route('admin.payment-settings.edit') }}">Payment Settings</a>
-                    <a class="cd-admin-nav-link {{ request()->routeIs('admin.ai-settings.*') ? 'active' : '' }}" href="{{ route('admin.ai-settings.edit') }}">AI Settings</a>
+                    <a class="cd-admin-nav-link {{ request()->routeIs('admin.ai-settings.*') ? 'active' : '' }}" href="{{ route('admin.ai-settings.index') }}">AI Settings</a>
                 </div>
             </div>
         </div>
@@ -502,7 +502,7 @@
                         <a class="cd-admin-nav-link {{ request()->routeIs('admin.contact-settings.*') ? 'active' : '' }}" href="{{ route('admin.contact-settings.edit') }}">Contact Settings</a>
                         <a class="cd-admin-nav-link {{ request()->routeIs('admin.mail-settings.*') ? 'active' : '' }}" href="{{ route('admin.mail-settings.edit') }}">Email Settings</a>
                         <a class="cd-admin-nav-link {{ request()->routeIs('admin.payment-settings.*') ? 'active' : '' }}" href="{{ route('admin.payment-settings.edit') }}">Payment Settings</a>
-                        <a class="cd-admin-nav-link {{ request()->routeIs('admin.ai-settings.*') ? 'active' : '' }}" href="{{ route('admin.ai-settings.edit') }}">AI Settings</a>
+                        <a class="cd-admin-nav-link {{ request()->routeIs('admin.ai-settings.*') ? 'active' : '' }}" href="{{ route('admin.ai-settings.index') }}">AI Settings</a>
                     </div>
                 </div>
             </div>

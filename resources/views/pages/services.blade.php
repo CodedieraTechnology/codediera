@@ -3,6 +3,203 @@
 @section('title', 'Services')
 
 @section('content')
+    <style>
+        .cd-service-card {
+            border-radius: 1.25rem !important;
+            overflow: hidden;
+            border: 1px solid var(--cd-border) !important;
+            background: var(--cd-surface) !important;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04) !important;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease !important;
+        }
+        .cd-service-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 35px rgba(15, 23, 42, 0.08) !important;
+        }
+        .cd-card-img-wrapper {
+            position: relative;
+            overflow: hidden;
+            height: 190px;
+            width: 100%;
+            border-radius: 1.25rem 1.25rem 0 0;
+        }
+        .cd-card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .cd-service-card:hover .cd-card-img-wrapper img {
+            transform: scale(1.06);
+        }
+        .cd-glass-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.4rem 0.85rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 2rem;
+            z-index: 2;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.65);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .cd-glass-badge.bg-free-badge {
+            background: rgba(22, 163, 74, 0.85);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        .cd-service-icon-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 50%;
+            background: rgba(13, 110, 253, 0.08);
+            color: var(--cd-primary);
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .cd-service-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 0;
+            line-height: 1.4;
+        }
+        .cd-service-title a {
+            color: var(--cd-heading) !important;
+            transition: color 0.2s ease;
+        }
+        .cd-service-title a:hover {
+            color: var(--cd-primary) !important;
+        }
+        .cd-service-description {
+            font-size: 0.875rem;
+            color: var(--cd-muted);
+            line-height: 1.6;
+            margin-top: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 4.8em; /* Exact height for 3 lines */
+            margin-bottom: 1rem;
+        }
+        .cd-service-footer {
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid var(--cd-border);
+            display: flex;
+            gap: 0.5rem;
+        }
+        .cd-service-footer .btn {
+            border-radius: 2rem;
+            font-weight: 500;
+            padding: 0.4rem 1rem;
+            font-size: 0.825rem;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+        .cd-service-footer .btn-primary {
+            background-color: var(--cd-primary) !important;
+            border-color: var(--cd-primary) !important;
+        }
+        .cd-service-footer .btn-primary:hover {
+            opacity: 0.9;
+        }
+        .cd-badge-pill {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            padding: 0.25rem 0.65rem;
+            border-radius: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .cd-badge-pill.bg-type {
+            background-color: rgba(13, 110, 253, 0.08);
+            color: var(--cd-primary);
+            border: 1px solid rgba(13, 110, 253, 0.15);
+        }
+        .cd-badge-pill.bg-duration {
+            background-color: rgba(100, 116, 139, 0.08);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+        .cd-badge-pill.bg-applink {
+            background-color: rgba(16, 185, 129, 0.08);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.15);
+        }
+        .cd-badge-pill.payment-recurring {
+            background-color: rgba(245, 158, 11, 0.08);
+            color: #d97706;
+            border: 1px solid rgba(245, 158, 11, 0.15);
+        }
+        .cd-badge-pill.payment-custom {
+            background-color: rgba(100, 116, 139, 0.08);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+        .cd-badge-pill.trial-badge {
+            background-color: rgba(13, 110, 253, 0.08);
+            color: var(--cd-primary);
+            border: 1px solid rgba(13, 110, 253, 0.15);
+        }
+
+        /* Dark Theme Overrides */
+        [data-theme="dark"] .cd-service-card {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+        }
+        [data-theme="dark"] .cd-service-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45) !important;
+        }
+        [data-theme="dark"] .cd-service-icon-box {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+        }
+        [data-theme="dark"] .cd-glass-badge {
+            background: rgba(17, 24, 39, 0.75);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+        [data-theme="dark"] .cd-badge-pill.bg-type {
+            background-color: rgba(13, 110, 253, 0.15);
+            color: #60a5fa;
+            border-color: rgba(13, 110, 253, 0.25);
+        }
+        [data-theme="dark"] .cd-badge-pill.bg-duration {
+            background-color: rgba(148, 163, 184, 0.15);
+            color: #cbd5e1;
+            border-color: rgba(148, 163, 184, 0.25);
+        }
+        [data-theme="dark"] .cd-badge-pill.bg-applink {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border-color: rgba(16, 185, 129, 0.25);
+        }
+        [data-theme="dark"] .cd-badge-pill.payment-recurring {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border-color: rgba(245, 158, 11, 0.25);
+        }
+        [data-theme="dark"] .cd-badge-pill.payment-custom {
+            background-color: rgba(148, 163, 184, 0.15);
+            color: #cbd5e1;
+            border-color: rgba(148, 163, 184, 0.25);
+        }
+        [data-theme="dark"] .cd-badge-pill.trial-badge {
+            background-color: rgba(13, 110, 253, 0.15);
+            color: #60a5fa;
+            border-color: rgba(13, 110, 253, 0.25);
+        }
+    </style>
+
     <div class="container py-4">
         @if(session('status'))
             <div class="alert alert-success">{{ session('status') }}</div>
@@ -27,89 +224,101 @@
         <div class="row g-3">
             @forelse($services as $service)
                 <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card h-100 overflow-hidden cd-service-card">
-                        <div class="card-body">
-                            @php($cardImage = $service->approach_image_path ?: ($service->screenshot_path ?: ($service->images->first()?->image_path)))
-                            @php($typeKey = $service->service_type ?: 'other')
-                            @php($typeLabel = $serviceTypeNames[$typeKey] ?? \Illuminate\Support\Str::headline($typeKey))
-                            @php($paymentType = $service->payment_type ?: 'one_time')
-                            @php($schema = (isset($serviceTypeSchemas) && isset($serviceTypeSchemas[$typeKey]) && is_array($serviceTypeSchemas[$typeKey])) ? $serviceTypeSchemas[$typeKey] : [])
-                            @php($schemaLabels = collect($schema)->filter(function ($f) { return is_array($f) && !empty($f['label']); })->pluck('label')->values())
-                            @php($schemaCount = is_array($schema) ? count($schema) : 0)
+                    <div class="card h-100 cd-service-card">
+                        @php($cardImage = $service->approach_image_path ?: ($service->screenshot_path ?: ($service->images->first()?->image_path)))
+                        @php($typeKey = $service->service_type ?: 'other')
+                        @php($typeLabel = $serviceTypeNames[$typeKey] ?? \Illuminate\Support\Str::headline($typeKey))
+                        @php($paymentType = $service->payment_type ?: 'one_time')
+                        @php($schema = (isset($serviceTypeSchemas) && isset($serviceTypeSchemas[$typeKey]) && is_array($serviceTypeSchemas[$typeKey])) ? $serviceTypeSchemas[$typeKey] : [])
+                        @php($schemaLabels = collect($schema)->filter(function ($f) { return is_array($f) && !empty($f['label']); })->pluck('label')->values())
+                        @php($schemaCount = is_array($schema) ? count($schema) : 0)
 
+                        <div class="cd-card-img-wrapper">
                             @if($cardImage)
-                                <a href="{{ route('services.show', $service) }}" class="d-block mb-3 text-decoration-none">
-                                    <div class="ratio ratio-16x9 rounded-4 overflow-hidden">
-                                        <img class="w-100 h-100" src="{{ asset('storage/'.$cardImage) }}" alt="{{ $service->title }}" style="object-fit: cover;">
-                                    </div>
+                                <a href="{{ route('services.show', $service) }}">
+                                    <img src="{{ asset('storage/'.$cardImage) }}" alt="{{ $service->title }}">
                                 </a>
+                            @else
+                                <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, var(--cd-primary), var(--cd-heading)); opacity: 0.85;">
+                                    <span class="text-white fw-bold opacity-50" style="font-size: 1.5rem;">Codediera</span>
+                                </div>
                             @endif
 
-                            <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
-                                <span class="badge text-bg-light text-dark">{{ $typeLabel }}</span>
+                            @if($service->is_free)
+                                <span class="cd-glass-badge bg-free-badge">Free</span>
+                            @elseif(!is_null($service->price))
+                                <span class="cd-glass-badge">₦{{ number_format((float)$service->price, 2) }}</span>
+                            @else
+                                <span class="cd-glass-badge">Quote</span>
+                            @endif
+                        </div>
+
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex flex-wrap gap-2 align-items-center mb-2.5">
+                                <span class="cd-badge-pill bg-type">{{ $typeLabel }}</span>
                                 @if($service->delivery_duration_value)
-                                    <span class="badge text-bg-light text-dark">
+                                    <span class="cd-badge-pill bg-duration">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-clock-fill" viewBox="0 0 16 16">
+                                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                                        </svg>
                                         {{ (int) $service->delivery_duration_value }} {{ $service->delivery_duration_unit ?: 'days' }}
                                     </span>
                                 @endif
                                 @if(!empty($service->download_url))
-                                    <span class="badge text-bg-success">App / Link</span>
+                                    <span class="cd-badge-pill bg-applink">App / Link</span>
                                 @endif
                                 @if(in_array($paymentType, ['monthly', 'yearly'], true) && ($service->grace_trial_enabled ?? true))
-                                    <span class="badge text-bg-warning text-dark cd-trial-badge">3 days trial</span>
+                                    <span class="cd-badge-pill trial-badge">3 days trial</span>
                                 @endif
                             </div>
 
-                            <div class="d-flex align-items-start gap-2 mb-2">
-                                <h2 class="h5 mb-0 flex-grow-1">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                @if($service->icon)
+                                    <div class="cd-service-icon-box">
+                                        <span>{{ $service->icon }}</span>
+                                    </div>
+                                @endif
+                                <h3 class="cd-service-title">
                                     <a class="text-decoration-none" href="{{ route('services.show', $service) }}">{{ $service->title }}</a>
-                                </h2>
-                                @if($service->is_free)
-                                    <span class="badge text-bg-success">Free</span>
-                                @elseif(!is_null($service->price))
-                                    <span class="badge text-bg-primary">₦{{ number_format((float)$service->price, 2) }}</span>
-                                @else
-                                    <span class="badge text-bg-secondary">Quote</span>
-                                @endif
+                                </h3>
                             </div>
 
-                            <div class="d-flex flex-wrap gap-2 mb-3">
+                            <div class="d-flex flex-wrap gap-1.5 mb-2.5">
                                 @if($paymentType === 'monthly')
-                                    <span class="badge text-bg-dark">Monthly</span>
+                                    <span class="cd-badge-pill payment-recurring">Monthly</span>
                                 @elseif($paymentType === 'yearly')
-                                    <span class="badge text-bg-dark">Yearly</span>
+                                    <span class="cd-badge-pill payment-recurring">Yearly</span>
                                 @elseif($paymentType === 'custom')
-                                    <span class="badge text-bg-dark">Custom plan</span>
+                                    <span class="cd-badge-pill payment-custom">Custom plan</span>
                                 @else
-                                    <span class="badge text-bg-dark">One-time</span>
+                                    <span class="cd-badge-pill bg-duration">One-time</span>
                                 @endif
                                 @php($contactFields = array_values(array_unique(array_filter($service->inquiry_fields ?? ['phone', 'company', 'budget', 'message']))))
-                                @if(count($contactFields))
-                                    <span class="badge text-bg-light text-dark">Contact: {{ implode(', ', $contactFields) }}</span>
-                                @endif
                                 @if($schemaCount)
-                                    <span class="badge text-bg-light text-dark">Setup fields: {{ $schemaCount }}</span>
+                                    <span class="cd-badge-pill bg-duration">Setup fields: {{ $schemaCount }}</span>
                                 @endif
                             </div>
 
                             @if($service->description)
-                                <div class="text-muted small mb-3">{{ \Illuminate\Support\Str::limit(strip_tags($service->description), 220) }}</div>
+                                <div class="cd-service-description">
+                                    {{ strip_tags($service->description) }}
+                                </div>
                             @endif
 
                             @if($schemaCount)
-                                <div class="small fw-semibold mb-2">Includes</div>
-                                <div class="d-flex flex-wrap gap-2 mb-3">
-                                    @foreach($schemaLabels->take(6) as $lbl)
-                                        <span class="badge text-bg-light text-dark">{{ $lbl }}</span>
+                                <div class="small fw-semibold mb-2 text-muted">Includes</div>
+                                <div class="d-flex flex-wrap gap-1.5 mb-3">
+                                    @foreach($schemaLabels->take(4) as $lbl)
+                                        <span class="cd-badge-pill bg-duration" style="font-size: 0.65rem; text-transform: none; font-weight: normal; letter-spacing: 0;">{{ $lbl }}</span>
                                     @endforeach
-                                    @if($schemaLabels->count() > 6)
-                                        <span class="badge text-bg-light text-dark">+{{ $schemaLabels->count() - 6 }} more</span>
+                                    @if($schemaLabels->count() > 4)
+                                        <span class="cd-badge-pill bg-duration" style="font-size: 0.65rem; text-transform: none; font-weight: normal; letter-spacing: 0;">+{{ $schemaLabels->count() - 4 }} more</span>
                                     @endif
                                 </div>
                             @endif
 
-                            <div class="d-flex flex-wrap gap-2">
-                                <a class="btn btn-sm btn-outline-primary flex-grow-1" href="{{ route('services.show', $service) }}">View details</a>
+                            <div class="cd-service-footer mt-auto d-flex gap-2">
+                                <a class="btn btn-sm btn-outline-primary" href="{{ route('services.show', $service) }}">View details</a>
                                 <button
                                     class="btn btn-sm btn-primary"
                                     type="button"

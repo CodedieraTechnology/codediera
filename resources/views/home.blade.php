@@ -3,127 +3,126 @@
 @section('title', 'Home')
 
 @section('content')
-    <div class="container py-4">
-        @if($sliders->count() > 0)
-            <!-- Hero Section with Carousel Background and Card Overlay -->
-            <section class="hero-wrapper position-relative mb-5">
-                <style>
-                    .hero-wrapper {
-                        overflow: hidden;
-                        border-radius: 1rem;
-                    }
-                    .hero-wrapper #homeCarousel {
-                        height: 480px; /* Default height for mobile/tablet */
-                    }
-                    @media (min-width: 992px) {
-                        .hero-wrapper #homeCarousel {
-                            height: 600px; /* Taller on desktop */
-                        }
-                    }
-                    .hero-wrapper #homeCarousel .carousel-inner,
-                    .hero-wrapper #homeCarousel .carousel-item {
-                        height: 100%;
-                    }
+    @if($sliders->count() > 0)
+        <!-- Hero Section with Carousel Background and Card Overlay -->
+        <section class="hero-wrapper position-relative mb-5">
+            <style>
+                .hero-wrapper {
+                    overflow: hidden;
+                    border-radius: 0;
+                }
+                .hero-wrapper #homeCarousel {
+                    height: 480px; /* Default height for mobile/tablet */
+                }
+                @media (max-width: 991.98px) {
                     .hero-overlay-container {
-                        position: absolute;
-                        inset: 0;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        padding: 1.5rem;
-                        z-index: 5;
-                        background: rgba(15, 23, 42, 0.55); /* Soft dark overlay for better text readability */
+                        padding: 1rem;
                     }
-                    .hero-overlay-card {
-                        background: transparent !important;
-                        border: 0 !important;
-                        box-shadow: none !important;
-                        backdrop-filter: none !important;
-                        -webkit-backdrop-filter: none !important;
-                        max-width: 900px;
-                        width: 100%;
+                }
+                @media (min-width: 992px) {
+                    .hero-wrapper #homeCarousel {
+                        height: calc(100vh - (var(--cd-nav-height) + var(--cd-topbar-height))); /* Full viewport height on desktop */
                     }
-                    /* Global overlay text colors (white text for readability on top of slide background) */
-                    .hero-overlay-card .section-kicker {
-                        color: rgba(255, 255, 255, 0.75) !important;
-                    }
-                    .hero-overlay-card .section-title {
-                        color: #ffffff !important;
-                    }
-                    .hero-overlay-card .text-muted {
-                        color: rgba(255, 255, 255, 0.85) !important;
-                    }
-                    .hero-overlay-card .btn-outline-primary {
-                        color: #ffffff !important;
-                        border-color: #ffffff !important;
-                    }
-                    .hero-overlay-card .btn-outline-primary:hover {
-                        background-color: #ffffff !important;
-                        color: var(--cd-primary) !important;
-                    }
-                    /* Hide carousel-caption when overlaid to prevent double headings */
-                    .hero-wrapper .carousel-caption,
-                    .hero-wrapper .carousel-mobile-caption {
-                        display: none !important;
-                    }
-                </style>
+                }
+                .hero-wrapper #homeCarousel .carousel-inner,
+                .hero-wrapper #homeCarousel .carousel-item {
+                    height: 100%;
+                }
+                .hero-overlay-container {
+                    position: absolute;
+                    inset: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 1.5rem;
+                    z-index: 5;
+                    background: rgba(15, 23, 42, 0.55); /* Soft dark overlay for better text readability */
+                }
+                .hero-overlay-card {
+                    background: transparent !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    backdrop-filter: none !important;
+                    -webkit-backdrop-filter: none !important;
+                    max-width: 900px;
+                    width: 100%;
+                }
+                /* Global overlay text colors (white text for readability on top of slide background) */
+                .hero-overlay-card .section-kicker {
+                    color: rgba(255, 255, 255, 0.75) !important;
+                }
+                .hero-overlay-card .section-title {
+                    color: #ffffff !important;
+                }
+                .hero-overlay-card .text-muted {
+                    color: rgba(255, 255, 255, 0.85) !important;
+                }
+                .hero-overlay-card .btn-outline-primary {
+                    color: #ffffff !important;
+                    border-color: #ffffff !important;
+                }
+                .hero-overlay-card .btn-outline-primary:hover {
+                    background-color: #ffffff !important;
+                    color: var(--cd-primary) !important;
+                }
+                /* Hide carousel-caption when overlaid to prevent double headings */
+                .hero-wrapper .carousel-caption,
+                .hero-wrapper .carousel-mobile-caption {
+                    display: none !important;
+                }
+            </style>
 
-                <!-- Sliding Carousel -->
-                <div id="homeCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
-                    <div class="carousel-inner rounded overflow-hidden">
-                        @foreach($sliders as $index => $slide)
-                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                @php($hasMedia = !empty($slide->video_path) || !empty($slide->image_path))
-                                @if(!empty($slide->video_path))
-                                    <video class="d-block w-100" autoplay muted loop playsinline preload="metadata" style="height: 100%; object-fit: cover;" @if(!empty($slide->image_path)) poster="{{ asset('storage/'.$slide->image_path) }}" @endif>
-                                        <source src="{{ asset('storage/'.$slide->video_path) }}">
-                                    </video>
-                                @elseif(!empty($slide->image_path))
-                                    <img src="{{ asset('storage/'.$slide->image_path) }}" class="d-block w-100" alt="{{ $slide->title }}" style="height: 100%; object-fit: cover;">
-                                @endif
+            <!-- Sliding Carousel -->
+            <div id="homeCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                <div class="carousel-inner overflow-hidden">
+                    @foreach($sliders as $index => $slide)
+                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                            @php($hasMedia = !empty($slide->video_path) || !empty($slide->image_path))
+                            @if(!empty($slide->video_path))
+                                <video class="d-block w-100" autoplay muted loop playsinline preload="metadata" disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback" style="height: 100%; object-fit: cover;" @if(!empty($slide->image_path)) poster="{{ asset('storage/'.$slide->image_path) }}" @endif>
+                                    <source src="{{ asset('storage/'.$slide->video_path) }}">
+                                </video>
+                            @elseif(!empty($slide->image_path))
+                                <img src="{{ asset('storage/'.$slide->image_path) }}" class="d-block w-100" alt="{{ $slide->title }}" style="height: 100%; object-fit: cover;">
+                            @endif
 
-                                @if(!$hasMedia)
-                                    <div class="cd-carousel-fallback d-flex align-items-center justify-content-center bg-secondary text-white" style="height: 100%;">
-                                        <div class="text-center">
-                                            <div class="h2 mb-0">{{ $slide->title }}</div>
-                                        </div>
+                            @if(!$hasMedia)
+                                <div class="cd-carousel-fallback d-flex align-items-center justify-content-center bg-secondary text-white" style="height: 100%;">
+                                    <div class="text-center">
+                                        <div class="h2 mb-0">{{ $slide->title }}</div>
                                     </div>
-                                @endif
-                            </div>
-                        @endforeach
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev" style="z-index: 6;">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next" style="z-index: 6;">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
                 </div>
+            </div>
 
-                <!-- Hero Card Overlayed on Top of the Slide -->
-                <div class="hero-overlay-container">
-                    <div class="card hero-overlay-card">
-                        <div class="card-body p-0">
-                            <div class="row justify-content-center text-center">
-                                <div class="col-12 col-lg-10">
-                                    <div class="section-kicker">{{ $siteSettings?->home_hero_kicker ?: 'What We Do' }}</div>
-                                    <h1 class="h3 h2-lg section-title mb-2">{{ $siteSettings?->home_hero_title ?: ($siteSettings?->site_name ?? config('app.name', 'Codediera')) }}</h1>
-                                    <div class="text-muted mb-3 mx-auto" style="max-width: 800px;">
-                                        {{ $siteSettings?->home_hero_body ?: 'We build modern websites, web applications, and business systems that help you sell, manage customers, and automate work. We also deliver digital skills training and career support for students and professionals.' }}
-                                    </div>
-                                    <div class="d-flex justify-content-center gap-3">
-                                        <a class="btn btn-primary" href="{{ route('services') }}">Explore Services</a>
-                                        <a class="btn btn-outline-primary" href="{{ route('contact') }}">Talk to Us</a>
-                                    </div>
+            <!-- Hero Card Overlayed on Top of the Slide -->
+            <div class="hero-overlay-container">
+                <div class="card hero-overlay-card">
+                    <div class="card-body p-0">
+                        <div class="row justify-content-center text-center">
+                            <div class="col-12 col-lg-10">
+                                <div class="section-kicker">{{ $siteSettings?->home_hero_kicker ?: 'What We Do' }}</div>
+                                <h1 class="h3 h2-lg section-title mb-2">{{ $siteSettings?->home_hero_title ?: ($siteSettings?->site_name ?? config('app.name', 'Codediera')) }}</h1>
+                                <div class="text-muted mb-3 mx-auto" style="max-width: 800px;">
+                                    {{ $siteSettings?->home_hero_body ?: 'We build modern websites, web applications, and business systems that help you sell, manage customers, and automate work. We also deliver digital skills training and career support for students and professionals.' }}
+                                </div>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <a class="btn btn-primary" href="{{ route('services') }}">Explore Services</a>
+                                    <a class="btn btn-outline-primary" href="{{ route('contact') }}">Talk to Us</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
-        @else
+            </div>
+        </section>
+    @endif
+
+    <div class="container py-4">
+        @if($sliders->count() == 0)
             <!-- Standard Hero Card if no sliders (Transparent Background) -->
             <section class="mb-5">
                 <div class="card bg-transparent border-0 shadow-none">
@@ -283,6 +282,310 @@
                         width: 380px;
                     }
                 }
+
+                /* Redesigned Services Card Styling */
+                .cd-service-card {
+                    border-radius: 1.25rem !important;
+                    overflow: hidden;
+                    border: 1px solid var(--cd-border) !important;
+                    background: var(--cd-surface) !important;
+                    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04) !important;
+                    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease !important;
+                }
+                .cd-service-card:hover {
+                    transform: translateY(-6px);
+                    box-shadow: 0 20px 35px rgba(15, 23, 42, 0.08) !important;
+                }
+                .cd-card-img-wrapper {
+                    position: relative;
+                    overflow: hidden;
+                    height: 190px;
+                    width: 100%;
+                    border-radius: 1.25rem 1.25rem 0 0;
+                }
+                .cd-card-img-wrapper img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+                .cd-service-card:hover .cd-card-img-wrapper img {
+                    transform: scale(1.06);
+                }
+                .cd-glass-badge {
+                    position: absolute;
+                    top: 1rem;
+                    right: 1rem;
+                    padding: 0.4rem 0.85rem;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    border-radius: 2rem;
+                    z-index: 2;
+                    backdrop-filter: blur(12px);
+                    -webkit-backdrop-filter: blur(12px);
+                    background: rgba(15, 23, 42, 0.65);
+                    color: #ffffff;
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                }
+                .cd-glass-badge.bg-free-badge {
+                    background: rgba(22, 163, 74, 0.85);
+                    border-color: rgba(255, 255, 255, 0.25);
+                }
+                .cd-service-icon-box {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 2.25rem;
+                    height: 2.25rem;
+                    border-radius: 50%;
+                    background: rgba(13, 110, 253, 0.08);
+                    color: var(--cd-primary);
+                    font-size: 1.1rem;
+                    flex-shrink: 0;
+                }
+                .cd-service-title {
+                    font-size: 1.05rem;
+                    font-weight: 600;
+                    margin-bottom: 0;
+                    line-height: 1.4;
+                }
+                .cd-service-title a {
+                    color: var(--cd-heading) !important;
+                    transition: color 0.2s ease;
+                }
+                .cd-service-title a:hover {
+                    color: var(--cd-primary) !important;
+                }
+                .cd-service-description {
+                    font-size: 0.875rem;
+                    color: var(--cd-muted);
+                    line-height: 1.6;
+                    margin-top: 0.5rem;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 3;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    height: 4.8em; /* Exact height for 3 lines */
+                }
+                .cd-service-footer {
+                    margin-top: 1.25rem;
+                    padding-top: 1rem;
+                    border-top: 1px solid var(--cd-border);
+                }
+                .cd-service-footer .btn-outline-primary {
+                    border-radius: 2rem;
+                    font-weight: 500;
+                    padding: 0.35rem 1rem;
+                    font-size: 0.825rem;
+                    transition: all 0.3s ease;
+                }
+                .cd-service-card:hover .cd-service-footer .btn-outline-primary {
+                    background-color: var(--cd-primary) !important;
+                    border-color: var(--cd-primary) !important;
+                    color: #ffffff !important;
+                }
+                .cd-badge-pill {
+                    font-size: 0.7rem;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.03em;
+                    padding: 0.25rem 0.65rem;
+                    border-radius: 2rem;
+                    display: inline-flex;
+                    align-items: center;
+                }
+                .cd-badge-pill.payment-recurring {
+                    background-color: rgba(245, 158, 11, 0.08);
+                    color: #d97706;
+                    border: 1px solid rgba(245, 158, 11, 0.15);
+                }
+                .cd-badge-pill.payment-custom {
+                    background-color: rgba(100, 116, 139, 0.08);
+                    color: #475569;
+                    border: 1px solid rgba(100, 116, 139, 0.15);
+                }
+                .cd-badge-pill.trial-badge {
+                    background-color: rgba(13, 110, 253, 0.08);
+                    color: var(--cd-primary);
+                    border: 1px solid rgba(13, 110, 253, 0.15);
+                }
+
+                /* Dark Theme Overrides */
+                [data-theme="dark"] .cd-service-card {
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+                }
+                [data-theme="dark"] .cd-service-card:hover {
+                    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45) !important;
+                }
+                [data-theme="dark"] .cd-service-icon-box {
+                    background: rgba(255, 255, 255, 0.08);
+                    color: #ffffff;
+                }
+                [data-theme="dark"] .cd-glass-badge {
+                    background: rgba(17, 24, 39, 0.75);
+                    border-color: rgba(255, 255, 255, 0.12);
+                }
+                [data-theme="dark"] .cd-badge-pill.payment-recurring {
+                    background-color: rgba(245, 158, 11, 0.15);
+                    color: #fbbf24;
+                    border-color: rgba(245, 158, 11, 0.25);
+                }
+                [data-theme="dark"] .cd-badge-pill.payment-custom {
+                    background-color: rgba(148, 163, 184, 0.15);
+                    color: #cbd5e1;
+                    border-color: rgba(148, 163, 184, 0.25);
+                }
+                [data-theme="dark"] .cd-badge-pill.trial-badge {
+                    background-color: rgba(13, 110, 253, 0.15);
+                    color: #60a5fa;
+                    border-color: rgba(13, 110, 253, 0.25);
+                }
+
+                /* Redesigned Projects Card Styling */
+                .cd-project-card {
+                    border-radius: 1.25rem !important;
+                    overflow: hidden;
+                    border: 1px solid var(--cd-border) !important;
+                    background: var(--cd-surface) !important;
+                    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04) !important;
+                    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease !important;
+                }
+                .cd-project-card:hover {
+                    transform: translateY(-6px);
+                    box-shadow: 0 20px 35px rgba(15, 23, 42, 0.08) !important;
+                }
+                .cd-project-img-wrapper {
+                    position: relative;
+                    overflow: hidden;
+                    height: 200px;
+                    width: 100%;
+                    border-radius: 1.25rem 1.25rem 0 0;
+                }
+                .cd-project-img-wrapper img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+                .cd-project-card:hover .cd-project-img-wrapper img {
+                    transform: scale(1.06);
+                }
+                .cd-project-tag-container {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 0.4rem;
+                    margin-bottom: 0.75rem;
+                }
+                .cd-project-tag {
+                    font-size: 0.7rem;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.03em;
+                    padding: 0.2rem 0.55rem;
+                    border-radius: 2rem;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.25rem;
+                }
+                .cd-project-tag.tag-live {
+                    background-color: rgba(16, 185, 129, 0.08);
+                    color: #059669;
+                    border: 1px solid rgba(16, 185, 129, 0.15);
+                }
+                .cd-project-tag.tag-zip {
+                    background-color: rgba(99, 102, 241, 0.08);
+                    color: #4f46e5;
+                    border: 1px solid rgba(99, 102, 241, 0.15);
+                }
+                .cd-project-tag.tag-commercial {
+                    background-color: rgba(245, 158, 11, 0.08);
+                    color: #d97706;
+                    border: 1px solid rgba(245, 158, 11, 0.15);
+                }
+                .cd-project-tag.tag-free {
+                    background-color: rgba(22, 163, 74, 0.08);
+                    color: #15803d;
+                    border: 1px solid rgba(22, 163, 74, 0.15);
+                }
+                .cd-project-tag.tag-new {
+                    background-color: rgba(13, 110, 253, 0.08);
+                    color: var(--cd-primary);
+                    border: 1px solid rgba(13, 110, 253, 0.15);
+                }
+                .cd-project-title {
+                    font-size: 1.05rem;
+                    font-weight: 600;
+                    margin-bottom: 0.5rem;
+                    line-height: 1.4;
+                    color: var(--cd-heading);
+                }
+                .cd-project-description {
+                    font-size: 0.875rem;
+                    color: var(--cd-muted);
+                    line-height: 1.6;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 3;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    height: 4.8em; /* Exact height for 3 lines */
+                    margin-bottom: 1.25rem;
+                }
+                .cd-project-footer {
+                    margin-top: auto;
+                    padding-top: 1rem;
+                    border-top: 1px solid var(--cd-border);
+                    display: flex;
+                    gap: 0.5rem;
+                }
+                .cd-project-footer .btn {
+                    border-radius: 2rem;
+                    font-weight: 500;
+                    font-size: 0.825rem;
+                    padding: 0.4rem 1rem;
+                    flex: 1;
+                    transition: all 0.3s ease;
+                }
+                .cd-project-footer .btn-primary {
+                    background-color: var(--cd-primary) !important;
+                    border-color: var(--cd-primary) !important;
+                }
+                .cd-project-footer .btn-primary:hover {
+                    opacity: 0.9;
+                }
+
+                /* Dark Theme Overrides for Projects */
+                [data-theme="dark"] .cd-project-card {
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+                }
+                [data-theme="dark"] .cd-project-card:hover {
+                    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45) !important;
+                }
+                [data-theme="dark"] .cd-project-tag.tag-live {
+                    background-color: rgba(16, 185, 129, 0.15);
+                    color: #34d399;
+                    border-color: rgba(16, 185, 129, 0.25);
+                }
+                [data-theme="dark"] .cd-project-tag.tag-zip {
+                    background-color: rgba(99, 102, 241, 0.15);
+                    color: #818cf8;
+                    border-color: rgba(99, 102, 241, 0.25);
+                }
+                [data-theme="dark"] .cd-project-tag.tag-commercial {
+                    background-color: rgba(245, 158, 11, 0.15);
+                    color: #fbbf24;
+                    border-color: rgba(245, 158, 11, 0.25);
+                }
+                [data-theme="dark"] .cd-project-tag.tag-free {
+                    background-color: rgba(22, 163, 74, 0.15);
+                    color: #4ade80;
+                    border-color: rgba(22, 163, 74, 0.25);
+                }
+                [data-theme="dark"] .cd-project-tag.tag-new {
+                    background-color: rgba(13, 110, 253, 0.15);
+                    color: #60a5fa;
+                    border-color: rgba(13, 110, 253, 0.25);
+                }
             </style>
 
             @if($services->count())
@@ -290,44 +593,61 @@
                     <div class="cd-hscroll-track">
                         @foreach($services as $service)
                             <div class="cd-hscroll-item">
-                                <div class="card h-100">
+                                <div class="card h-100 cd-service-card">
                                     @php($cardImage = $service->approach_image_path ?: ($service->screenshot_path ?: ($service->images->first()?->image_path)))
-                                    @if($cardImage)
-                                        <a href="{{ route('services.show', $service) }}" class="text-decoration-none">
-                                            <img src="{{ asset('storage/'.$cardImage) }}" class="card-img-top" alt="{{ $service->title }}" style="height:180px;object-fit:cover">
-                                        </a>
-                                    @endif
-                                    <div class="card-body">
+                                    
+                                    <div class="cd-card-img-wrapper">
+                                        @if($cardImage)
+                                            <a href="{{ route('services.show', $service) }}">
+                                                <img src="{{ asset('storage/'.$cardImage) }}" alt="{{ $service->title }}">
+                                            </a>
+                                        @else
+                                            <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, var(--cd-primary), var(--cd-heading)); opacity: 0.85;">
+                                                <span class="text-white fw-bold opacity-50" style="font-size: 1.5rem;">Codediera</span>
+                                            </div>
+                                        @endif
+
+                                        @if($service->is_free)
+                                            <span class="cd-glass-badge bg-free-badge">Free</span>
+                                        @elseif(!is_null($service->price))
+                                            <span class="cd-glass-badge">₦{{ number_format((float)$service->price, 2) }}</span>
+                                        @endif
+                                    </div>
+
+                                    <div class="card-body d-flex flex-column">
                                         <div class="d-flex align-items-center gap-2 mb-2">
                                             @if($service->icon)
-                                                <span class="badge text-bg-secondary">{{ $service->icon }}</span>
+                                                <div class="cd-service-icon-box">
+                                                    <span>{{ $service->icon }}</span>
+                                                </div>
                                             @endif
-                                            <h3 class="h6 mb-0">
+                                            <h3 class="cd-service-title">
                                                 <a class="text-decoration-none" href="{{ route('services.show', $service) }}">{{ $service->title }}</a>
                                             </h3>
-                                            @if($service->is_free)
-                                                <span class="badge text-bg-success ms-auto">Free</span>
-                                            @elseif(!is_null($service->price))
-                                                <span class="badge text-bg-primary ms-auto">₦{{ number_format((float)$service->price, 2) }}</span>
-                                            @endif
                                         </div>
+
                                         <div class="d-flex flex-wrap gap-2 mb-2">
                                             @php($paymentType = $service->payment_type ?: 'one_time')
                                             @if($paymentType === 'monthly')
-                                                <span class="badge text-bg-warning text-dark">Monthly</span>
+                                                <span class="cd-badge-pill payment-recurring">Monthly</span>
                                             @elseif($paymentType === 'yearly')
-                                                <span class="badge text-bg-warning text-dark">Yearly</span>
+                                                <span class="cd-badge-pill payment-recurring">Yearly</span>
                                             @elseif($paymentType === 'custom')
-                                                <span class="badge text-bg-dark">Custom plan</span>
+                                                <span class="cd-badge-pill payment-custom">Custom plan</span>
                                             @endif
                                             @if(in_array($paymentType, ['monthly', 'yearly'], true) && ($service->grace_trial_enabled ?? true))
-                                                <span class="badge text-bg-light text-dark">3days trial</span>
+                                                <span class="cd-badge-pill trial-badge">3-day trial</span>
                                             @endif
                                         </div>
+
                                         @if($service->description)
-                                            <div class="text-muted">{{ \Illuminate\Support\Str::limit(strip_tags($service->description), 140) }}</div>
+                                            <div class="cd-service-description">
+                                                {{ strip_tags($service->description) }}
+                                            </div>
                                         @endif
-                                        <div class="mt-3 d-flex flex-wrap justify-content-end gap-2">
+
+                                        <div class="cd-service-footer mt-auto d-flex justify-content-between align-items-center">
+                                            <a class="text-decoration-none small fw-semibold" href="{{ route('services.show', $service) }}" style="color: var(--cd-primary);">Learn More &rarr;</a>
                                             <a class="btn btn-sm btn-outline-primary" href="{{ route('services.show', $service) }}">View details</a>
                                         </div>
                                     </div>
@@ -545,17 +865,103 @@
                 <a class="btn btn-sm btn-outline-primary" href="{{ route('projects') }}">View all</a>
             </div>
             <div class="row g-3">
-                @forelse($projects as $project)
+                @forelse($projects as $index => $project)
                     <div class="col-12 col-md-6 col-lg-4">
-                        <div class="card h-100">
-                            @if($project->image_path)
-                                <img src="{{ asset('storage/'.$project->image_path) }}" class="card-img-top" alt="{{ $project->title }}" style="height:180px;object-fit:cover">
-                            @endif
-                            <div class="card-body">
-                                <h3 class="h6">{{ $project->title }}</h3>
-                                @if($project->description)
-                                    <div class="text-muted">{{ $project->description }}</div>
+                        <div class="card h-100 cd-project-card">
+                            <div class="cd-project-img-wrapper">
+                                @if($project->image_path)
+                                    <img src="{{ asset('storage/'.$project->image_path) }}" alt="{{ $project->title }}">
+                                @else
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, var(--cd-heading), var(--cd-primary)); opacity: 0.85;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-laptop text-white opacity-40" viewBox="0 0 16 16">
+                                            <path d="M13.5 3a.5.5 0 0 1 .5.5V11H2V3.5a.5.5 0 0 1 .5-.5h11zm-11-1A1.5 1.5 0 0 0 1 3.5V12h14V3.5A1.5 1.5 0 0 0 13.5 2h-11zM0 12.5h16a.5.5 0 0 1 0 1H0a.5.5 0 0 1 0-1z"/>
+                                        </svg>
+                                    </div>
                                 @endif
+                                
+                                @if(!is_null($project->cost) && $project->cost > 0)
+                                    <span class="cd-glass-badge">₦{{ number_format((float)$project->cost, 2) }}</span>
+                                @elseif(!is_null($project->cost) && (float)$project->cost === 0.0)
+                                    <span class="cd-glass-badge bg-free-badge">Free</span>
+                                @endif
+                            </div>
+
+                            <div class="card-body d-flex flex-column">
+                                <div class="cd-project-tag-container">
+                                    @if($index < 2)
+                                        <span class="cd-project-tag tag-new">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-lightning-charge-fill" viewBox="0 0 16 16">
+                                                <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09z"/>
+                                            </svg>
+                                            Latest Release
+                                        </span>
+                                    @endif
+                                    @if($project->url)
+                                        <span class="cd-project-tag tag-live">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-globe" viewBox="0 0 16 16">
+                                                <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm7.5-6.923c-.67.424-1.148 1.02-1.43 1.704H7.5V1.077zM7.5 3.86h-2.148c-.07.313-.112.636-.125.968H7.5V3.86zm0 1.936H5.21c-.007.16-.01.32-.01.48s.003.32.01.48h2.28v-.96zM7.5 7.74H5.228c.013.332.054.655.125.968H7.5V7.74zm0 1.936H6.07c.282.685.76 1.28 1.43 1.704V9.676zM8.5 1.077v1.704h1.43c-.282-.685-.76-1.28-1.43-1.704zm1.43 2.783H8.5v.968h2.175c-.013-.332-.054-.655-.125-.968zm.745 1.936H8.5v.96h2.28c.007-.16.01-.32.01-.48s-.003-.32-.01-.48zM8.5 7.74v.968h1.43c.07-.313.112-.636.125-.968H8.5zm0 1.936v1.704c.67-.424 1.148-1.02 1.43-1.704H8.5zm-5.74-5.936H1.07A7.02 7.02 0 0 0 1 6.5c0 .385.03.762.09 1.127h1.67a8.107 8.107 0 0 1 0-2.254zm10.48 0c.056.365.09.742.09 1.127 0 .385-.03.762-.09 1.127h1.67a7.02 7.02 0 0 0 .09-1.127 7.02 7.02 0 0 0-.09-1.127h-1.67zM1.385 3.647A6.974 6.974 0 0 0 2.68 5.626h1.996a8.134 8.134 0 0 1-1.03-3.082L1.385 3.647zM3.647 1.385A6.974 6.974 0 0 0 5.626 2.68V1.077A7.042 7.042 0 0 0 3.647 1.385zm8.706 0a7.042 7.042 0 0 0-1.979-.308v1.603a6.974 6.974 0 0 0 1.295 1.295l.684-2.59zM12.353 3.647l.684 2.59h1.996c-.347-.75-.79-1.425-1.385-1.979A8.134 8.134 0 0 0 12.353 3.647zm.979 4.979a7.025 7.025 0 0 0-1.385 1.979l.684 2.59c.79-.554 1.295-1.229 1.385-1.979H13.33zm-1.03 3.082c.424-.67.76-1.345 1.03-2.079H11.27a8.134 8.134 0 0 1-1.03 2.079l1.996-.684zm-3.8 2.308c.75-.056 1.425-.347 1.979-.89l-1.295-1.295v2.185zm-3.082 0A7.042 7.042 0 0 0 7.5 14.923v-1.603a6.974 6.974 0 0 0-1.295-1.295l-.684 2.59zm-2.59-1.996l.684-2.59H2.68c.347.75.79 1.425 1.385 1.979zM1.385 12.353a7.025 7.025 0 0 0 1.385-1.979l-.684-2.59H1.07c.056.365.09.742.09 1.127a7.02 7.02 0 0 0-.09 1.127h.315z"/>
+                                            </svg>
+                                            Live Demo
+                                        </span>
+                                    @endif
+                                    @if($project->zip_path)
+                                        <span class="cd-project-tag tag-zip">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-file-zip" viewBox="0 0 16 16">
+                                                <path d="M6.5 7.5a1 1 0 1 1 2 0 1 1 0 0 1-2 0z"/>
+                                                <path d="M5.5 5.5A.5.5 0 0 1 6 5h2a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zM5.5 7v-.5H6v.5h-.5zm.5 1h-.5v.5H6V8zm0 .5h.5V9H6v-.5z"/>
+                                                <path d="M4 0h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H4z"/>
+                                            </svg>
+                                            Source Code
+                                        </span>
+                                    @endif
+                                    @if(!is_null($project->cost) && $project->cost > 0)
+                                        <span class="cd-project-tag tag-commercial">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-cash" viewBox="0 0 16 16">
+                                                <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+                                                <path d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V4zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2H3z"/>
+                                            </svg>
+                                            Premium
+                                        </span>
+                                    @else
+                                        <span class="cd-project-tag tag-free">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-gift" viewBox="0 0 16 16">
+                                                <path d="M3 2.5a2.5 2.5 0 0 1 5 0 2.5 2.5 0 0 1 5 0v.006c0 .07 0 .27-.038.494H15a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13V7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h2.038A2.968 2.968 0 0 1 3 2.506V2.5zm1.068 1A1.5 1.5 0 0 0 3 2.5c0 .326.155.626.41.815C3.766 3.19 3.99 3.037 4.068 3.5zm2.41 0h1.042c-.078-.463-.302-.31-.658-.185a1.5 1.5 0 0 0-.384-.815zM9 2.5a1.5 1.5 0 0 0-1.068.815c.356-.125.58-.278.658.185h1.042A1.5 1.5 0 0 0 9 2.5zm2.932 1c.078-.463.302-.31.658-.185A1.5 1.5 0 0 0 13 2.5c0 .326-.155.626-.41.815-.356-.125-.58-.278-.658-.31zM15 7h-6v6h5.5a.5.5 0 0 0 .5-.5V7zm-7 6V7H2v5.5a.5.5 0 0 0 .5.5H8zM1 5h14V4H1v1z"/>
+                                            </svg>
+                                            Open Source
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <h3 class="cd-project-title">{{ $project->title }}</h3>
+
+                                @if($project->description)
+                                    <div class="cd-project-description">
+                                        {{ strip_tags($project->description) }}
+                                    </div>
+                                @endif
+
+                                <div class="cd-project-footer mt-auto d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-primary" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#projectDetailModal" 
+                                            data-project-title="{{ $project->title }}"
+                                            data-project-desc="{{ $project->description }}"
+                                            data-project-image="{{ $project->image_path ? asset('storage/'.$project->image_path) : '' }}"
+                                            data-project-url="{{ $project->url }}"
+                                            data-project-cost="{{ (!is_null($project->cost) && $project->cost > 0) ? '₦'.number_format((float)$project->cost, 2) : ((!is_null($project->cost) && (float)$project->cost === 0.0) ? 'Free' : '') }}"
+                                            data-project-zip="{{ $project->zip_path ? asset('storage/'.$project->zip_path) : '' }}">
+                                        View Details
+                                    </button>
+                                    @if($project->url)
+                                        <a class="btn btn-sm btn-primary d-inline-flex align-items-center justify-content-center gap-1.5" href="{{ $project->url }}" target="_blank" rel="noreferrer">
+                                            <span>Live Demo</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd" d="M14 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0 0 1h1.293L7.146 5.646a.5.5 0 0 0 .708.708L13 2.207V3.5a.5.5 0 0 0 1 0v-3z"/>
+                                                <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7.5a.5.5 0 0 0-1 0V12a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5h4.5a.5.5 0 0 0 0-1h-4.5z"/>
+                                            </svg>
+                                        </a>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>

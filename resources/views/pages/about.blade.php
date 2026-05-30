@@ -25,7 +25,7 @@
             <div class="col-12 col-lg-8">
                 <div class="card h-100">
                     <div class="card-body p-4">
-                        <h2 class="h4 mb-3 d-flex align-items-center gap-2">
+                        <h2 class="h4 mb-3">
                             <span class="text-primary">Welcome to</span> Codediera Technologies LTD
                         </h2>
                         

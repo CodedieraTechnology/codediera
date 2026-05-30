@@ -11,9 +11,11 @@ class AiSetting extends Model
         'provider',
         'api_key',
         'model',
+        'ssl_verify',
     ];
 
     protected $casts = [
         'enabled' => 'boolean',
+        'ssl_verify' => 'boolean',
     ];
 }

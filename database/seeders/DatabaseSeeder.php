@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
             'enabled' => false,
             'provider' => 'gemini',
             'model' => 'gemini-1.5-flash',
+            'ssl_verify' => true,
         ]);
 
         SiteSetting::query()->firstOrCreate(

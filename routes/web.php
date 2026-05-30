@@ -295,8 +295,14 @@ Route::prefix('admin')->group(function () {
         Route::get('payment-settings', [PaymentSettingsController::class, 'edit'])->name('admin.payment-settings.edit');
         Route::put('payment-settings', [PaymentSettingsController::class, 'update'])->name('admin.payment-settings.update');
 
-        Route::get('ai-settings', [AiSettingsController::class, 'edit'])->name('admin.ai-settings.edit');
-        Route::put('ai-settings', [AiSettingsController::class, 'update'])->name('admin.ai-settings.update');
+        Route::get('ai-settings', [AiSettingsController::class, 'index'])->name('admin.ai-settings.index');
+        Route::get('ai-settings/edit', function() {
+            return redirect()->route('admin.ai-settings.index');
+        })->name('admin.ai-settings.edit');
+        Route::post('ai-settings', [AiSettingsController::class, 'store'])->name('admin.ai-settings.store');
+        Route::put('ai-settings/{ai_setting}', [AiSettingsController::class, 'update'])->name('admin.ai-settings.update');
+        Route::delete('ai-settings/{ai_setting}', [AiSettingsController::class, 'destroy'])->name('admin.ai-settings.destroy');
+        Route::post('ai-settings/test', [AiSettingsController::class, 'testConnection'])->name('admin.ai-settings.test');
 
         Route::resource('jobs', JobVacancyController::class)->except(['show'])->names('admin.jobs');
 
@@ -322,3 +328,18 @@ Route::prefix('admin')->group(function () {
         Route::delete('google-reviews/{review}', [GoogleReviewController::class, 'destroy'])->name('admin.google-reviews.destroy');
     });
 });
+
+Route::get('/run-migrations-clear-cache-temp', function() {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        $output = \Illuminate\Support\Facades\Artisan::output();
+        
+        \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+        $output .= "\n" . \Illuminate\Support\Facades\Artisan::output();
+        
+        return response('<pre>' . $output . '</pre>');
+    } catch (\Throwable $e) {
+        return response('<pre>Error: ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '</pre>', 500);
+    }
+});
+
