@@ -1473,5 +1473,189 @@
         });
     });
 </script>
+
+<!-- Floating Chat Widget -->
+<div class="cd-chat-widget" id="cdChatWidget">
+    <!-- Chat Card -->
+    <div class="cd-chat-card card shadow-lg d-none" id="cdChatCard">
+        <div class="cd-chat-header d-flex align-items-center justify-content-between p-3 text-white" style="background: var(--cd-primary); border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+            <div class="d-flex align-items-center gap-2">
+                <div class="position-relative">
+                    <span class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle" style="width: 10px; height: 10px; padding: 0;"></span>
+                    <div class="rounded-circle bg-white text-primary d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="var(--cd-primary)" viewBox="0 0 16 16">
+                            <path d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9 9 0 0 0 8 15z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="m-0 fw-bold" style="font-size: 0.95rem; color: #ffffff;">{{ $siteSettings?->site_name ?? 'Codediera' }} Support</h5>
+                    <span style="font-size: 0.75rem; opacity: 0.9;">Online — ready to help</span>
+                </div>
+            </div>
+            <button type="button" class="btn-close btn-close-white" id="cdChatCloseBtn" aria-label="Close chat" style="font-size: 0.8rem;"></button>
+        </div>
+        <div class="card-body p-3">
+            <p class="text-muted small mb-3">Hello! How can we help you today? Choose one of our support channels below:</p>
+            <div class="d-flex flex-column gap-2">
+                @if($siteSettings?->social_whatsapp)
+                    <a href="{{ $siteSettings->social_whatsapp }}" target="_blank" rel="noopener" class="btn btn-success d-flex align-items-center justify-content-center gap-2 py-2" style="background-color: #25D366; border-color: #25D366; border-radius: 12px; font-weight: 600; color: #ffffff;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M13.601 2.326A7.897 7.897 0 0 0 8.006 0C3.588 0 .007 3.58.005 8.003c0 1.409.368 2.785 1.068 3.995L0 16l4.09-1.073a7.98 7.98 0 0 0 3.916 1.004h.003c4.418 0 8-3.58 8.002-8.003a7.94 7.94 0 0 0-2.41-5.602zM8.009 14.53h-.003a6.58 6.58 0 0 1-3.357-.928l-.24-.143-2.427.637.65-2.366-.156-.244A6.56 6.56 0 0 1 1.406 8.003c.002-3.646 2.97-6.614 6.6-6.614a6.56 6.56 0 0 1 4.67 1.94 6.57 6.57 0 0 1 1.934 4.674c-.002 3.646-2.97 6.527-6.6 6.527zm3.84-4.083c-.21-.105-1.24-.612-1.432-.682-.192-.07-.332-.105-.472.105-.14.21-.542.682-.665.822-.122.14-.245.157-.455.052-.21-.105-.887-.327-1.688-1.044-.623-.556-1.044-1.245-1.166-1.455-.122-.21-.013-.323.092-.428.094-.094.21-.245.315-.367.105-.122.14-.21.21-.35.07-.14.035-.262-.017-.367-.052-.105-.472-1.14-.647-1.56-.17-.41-.344-.354-.472-.36l-.402-.007a.772.772 0 0 0-.56.262c-.192.21-.735.717-.735 1.75 0 1.034.752 2.032.857 2.172.105.14 1.48 2.262 3.585 3.173.5.216.89.345 1.194.44.502.16.96.137 1.32.083.402-.06 1.24-.507 1.415-.997.175-.49.175-.91.122-.997-.052-.087-.192-.14-.402-.245z"/>
+                        </svg>
+                        <span>WhatsApp Chat</span>
+                    </a>
+                @endif
+                
+                @if($contactSettings?->phone)
+                    <a href="tel:{{ preg_replace('/[^0-9+]/', '', $contactSettings->phone) }}" class="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2 py-2" style="border-radius: 12px; font-weight: 600;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M3.654 1.328a.678.678 0 0 1 .736-.187l2.522 1.01c.329.132.445.5.24.776l-1.03 1.374a.678.678 0 0 0-.145.556c.27 1.18 1.02 2.928 2.63 4.539 1.61 1.61 3.358 2.36 4.539 2.63a.678.678 0 0 0 .556-.145l1.374-1.03c.276-.205.644-.089.776.24l1.01 2.522a.678.678 0 0 1-.187.736l-1.272 1.272c-.232.232-.54.332-.826.272-1.55-.32-4.11-1.4-6.86-4.15C4.448 9.43 3.368 6.87 3.048 5.32a.678.678 0 0 1 .272-.826L4.592 3.22 3.654 1.328z"/>
+                        </svg>
+                        <span>Call Us</span>
+                    </a>
+                @endif
+
+                <a href="{{ \Illuminate\Support\Facades\Route::has('contact') ? route('contact') : url('/contact') }}" class="btn btn-light d-flex align-items-center justify-content-center gap-2 py-2" style="border-radius: 12px; font-weight: 600; background: var(--cd-hover);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2z"/>
+                    </svg>
+                    <span>Contact Form</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toggle Button -->
+    <button class="cd-chat-toggle shadow-lg" id="cdChatToggleBtn" aria-label="Open chat" aria-expanded="false" aria-haspopup="true">
+        <svg class="cd-chat-icon-msg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9 9 0 0 0 8 15z"/>
+        </svg>
+        <svg class="cd-chat-icon-close d-none" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+        </svg>
+        <!-- Pulse effect ring -->
+        <span class="cd-chat-pulse"></span>
+    </button>
+</div>
+
+<style>
+    .cd-chat-widget {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 1050;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 16px;
+        font-family: inherit;
+    }
+    .cd-chat-toggle {
+        width: 56px;
+        height: 56px;
+        border-radius: 999px;
+        background-color: var(--cd-primary);
+        border: none;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        position: relative;
+        transition: transform 0.25s ease, background-color 0.25s ease;
+    }
+    .cd-chat-toggle:hover {
+        transform: scale(1.08);
+        background-color: var(--bs-link-hover-color);
+    }
+    .cd-chat-toggle:active {
+        transform: scale(0.95);
+    }
+    .cd-chat-pulse {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 999px;
+        border: 2px solid var(--cd-primary);
+        opacity: 0.7;
+        animation: cd-chat-pulse-anim 2s infinite;
+        pointer-events: none;
+    }
+    .cd-chat-card {
+        width: 320px;
+        border: 1px solid var(--cd-border);
+        border-radius: 1rem;
+        background: var(--cd-surface);
+        backdrop-filter: blur(15px);
+        transform: translateY(20px);
+        opacity: 0;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+        pointer-events: none;
+    }
+    .cd-chat-card.is-active {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
+    [data-theme="dark"] .cd-chat-card {
+        background: rgba(17, 24, 39, 0.9);
+    }
+    @keyframes cd-chat-pulse-anim {
+        0% {
+            transform: scale(1);
+            opacity: 0.8;
+        }
+        100% {
+            transform: scale(1.5);
+            opacity: 0;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var toggleBtn = document.getElementById('cdChatToggleBtn');
+        var closeBtn = document.getElementById('cdChatCloseBtn');
+        var chatCard = document.getElementById('cdChatCard');
+        var msgIcon = toggleBtn.querySelector('.cd-chat-icon-msg');
+        var closeIcon = toggleBtn.querySelector('.cd-chat-icon-close');
+        
+        function toggleChat() {
+            var isOpen = chatCard.classList.contains('is-active');
+            if (isOpen) {
+                chatCard.classList.remove('is-active');
+                msgIcon.classList.remove('d-none');
+                closeIcon.classList.add('d-none');
+                toggleBtn.setAttribute('aria-expanded', 'false');
+                setTimeout(function() {
+                    if (!chatCard.classList.contains('is-active')) {
+                        chatCard.classList.add('d-none');
+                    }
+                }, 300);
+            } else {
+                chatCard.classList.remove('d-none');
+                // Force layout reflow
+                chatCard.offsetHeight;
+                chatCard.classList.add('is-active');
+                msgIcon.classList.add('d-none');
+                closeIcon.classList.remove('d-none');
+                toggleBtn.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+        toggleBtn.addEventListener('click', toggleChat);
+        if (closeBtn) {
+            closeBtn.addEventListener('click', toggleChat);
+        }
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && chatCard.classList.contains('is-active')) {
+                toggleChat();
+            }
+        });
+    });
+</script>
 </body>
 </html>
